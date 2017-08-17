@@ -214,6 +214,10 @@ def _add_edge(g, e, edge_trace, label_trace):
         edge_trace['y'].extend([y0, y1, None])
 
 
+def build_matrix(g):
+    return networkx.to_numpy_matrix(g)
+
+
 def reset_node_colors(g):
     for n in g.nodes_iter():
         g.node[n]['color'] = node_color
