@@ -2,12 +2,12 @@ import os
 
 from time import sleep
 from selenium import webdriver
-
+from pathlib import Path
 
 # Baixe o driver de https://sites.google.com/a/chromium.org/chromedriver/downloads
 # e extraia o executável. Coloque na constante abaixo o caminho completo para ele.
 
-DRIVER_PATH = r'/caminho/para/o/executavel/do/driver'
+DRIVER_PATH = r'{}/bin/chromedriver'.format(str(Path.home()))
 
 WINDOW_WIDTH = 1024
 
@@ -15,7 +15,7 @@ WINDOW_HEIGHT = 768
 
 SLEEP_TIME = 2
 
-ROOT_NODE = 'SEU ID'
+ROOT_NODE = 'pedrocunial'
 
 DATA_FOLDER = 'facebook'
 
@@ -27,30 +27,36 @@ def scrape_nodes(browser):
         added = False
 
         for element in browser.find_elements_by_css_selector(".fsl.fwb.fcb"):
-            a = element.find_element_by_tag_name('a')
+            try:
+                a = element.find_element_by_tag_name('a')
 
-            href = a.get_attribute('href')
+                href = a.get_attribute('href')
 
-            if ROOT_NODE in href:
-                continue
+                if ROOT_NODE in href:
+                    continue
 
-            substring = href[25:(href.find('fref') - 1)]
+                substring = href[25:(href.find('fref') - 1)]
 
-            if substring.startswith('profile.php?id='):
-                node = substring[15:]
-            else:
-                node = substring
+                if substring.startswith('profile.php?id='):
+                    node = substring[15:]
+                else:
+                    node = substring
 
-            if node not in nodes:
-                nodes.add(node)
+                if node not in nodes:
+                    nodes.add(node)
 
-                added = True
+                    added = True
+                if added:
+                    browser.execute_script(
+                        'window.scrollTo(0, document.body.scrollHeight);')
+                    sleep(SLEEP_TIME)
+                else:
+                    break
 
-        if added:
-            browser.execute_script('window.scrollTo(0, document.body.scrollHeight);')
-            sleep(SLEEP_TIME)
-        else:
-            break
+            except selenium.common.exceptions.NoSuchElementException:
+                pass
+
+
 
     return nodes
 
@@ -73,8 +79,12 @@ def main():
     browser.get('https://www.facebook.com')
     sleep(SLEEP_TIME)
 
-    browser.find_element_by_id('email').send_keys('SEU LOGIN')
-    browser.find_element_by_id('pass').send_keys('SUA SENHA')
+    with open('{}/fb-keys.txt'.format(str(Path.home())), 'r') as f:
+        uname = str(f.readline()).strip()
+        pw = str(f.readline()).strip()
+
+    browser.find_element_by_id('email').send_keys(uname)
+    browser.find_element_by_id('pass').send_keys(pw)
     browser.find_element_by_id('loginbutton').click()
     sleep(SLEEP_TIME)
 

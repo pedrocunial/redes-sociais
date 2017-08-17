@@ -4,7 +4,7 @@ import twitter
 from twitter.error import TwitterError
 from pathlib import Path
 
-ROOT_NODE = 'realDonaldTrump'
+ROOT_NODE = 'supernerd1337'
 
 DATA_FOLDER = 'twitter'
 
