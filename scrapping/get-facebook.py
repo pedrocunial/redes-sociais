@@ -13,7 +13,7 @@ WINDOW_WIDTH = 1024
 
 WINDOW_HEIGHT = 768
 
-SLEEP_TIME = 2
+SLEEP_TIME = 8
 
 ROOT_NODE = 'pedrocunial'
 
@@ -27,34 +27,34 @@ def scrape_nodes(browser):
         added = False
 
         for element in browser.find_elements_by_css_selector(".fsl.fwb.fcb"):
-            try:
-                a = element.find_element_by_tag_name('a')
+            # try:
+            a = element.find_element_by_tag_name('a')
 
-                href = a.get_attribute('href')
+            href = a.get_attribute('href')
 
-                if ROOT_NODE in href:
-                    continue
+            if ROOT_NODE in href:
+                continue
 
-                substring = href[25:(href.find('fref') - 1)]
+            substring = href[25:(href.find('fref') - 1)]
 
-                if substring.startswith('profile.php?id='):
-                    node = substring[15:]
-                else:
-                    node = substring
+            if substring.startswith('profile.php?id='):
+                node = substring[15:]
+            else:
+                node = substring
 
-                if node not in nodes:
-                    nodes.add(node)
+            if node not in nodes:
+                nodes.add(node)
 
-                    added = True
-                if added:
-                    browser.execute_script(
-                        'window.scrollTo(0, document.body.scrollHeight);')
-                    sleep(SLEEP_TIME)
-                else:
-                    break
+                added = True
+            if added:
+                browser.execute_script(
+                    'window.scrollTo(0, document.body.scrollHeight);')
+                sleep(SLEEP_TIME)
+            else:
+                break
 
-            except selenium.common.exceptions.NoSuchElementException:
-                pass
+            # except selenium.common.exceptions.NoSuchElementException:
+            #     pass
 
 
 

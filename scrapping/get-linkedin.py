@@ -3,12 +3,13 @@ import os
 from time import sleep
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException, WebDriverException
+from pathlib import Path
 
 
 # Baixe o driver de https://sites.google.com/a/chromium.org/chromedriver/downloads
 # e extraia o executável. Coloque na constante abaixo o caminho completo para ele.
 
-DRIVER_PATH = r'/caminho/para/o/executavel/do/driver'
+DRIVER_PATH = r'{}/bin/chromedriver'.format(str(Path.home()))
 
 WINDOW_WIDTH = 1024
 
@@ -16,7 +17,7 @@ WINDOW_HEIGHT = 768
 
 SLEEP_TIME = 2
 
-ROOT_NODE = 'SEU ID'
+ROOT_NODE = 'pedrocunial'
 
 DATA_FOLDER = 'linkedin'
 
@@ -74,10 +75,18 @@ def main():
     browser.switch_to_default_content()
     sleep(SLEEP_TIME)
 
+    try:
+        with open('{}/linkedin-keys.txt'.format(str(Path.home())), 'r') as fin:
+            login = fin.readline().strip()
+            pwd = fin.readline().strip()
+    except:
+        print('File error')
+        quit()
+
     frames = browser.find_elements_by_tag_name('iframe')
     browser.switch_to_frame(frames[0])
-    browser.find_element_by_id('session_key-login').send_keys('SEU LOGIN')
-    browser.find_element_by_id('session_password-login').send_keys('SUA SENHA')
+    browser.find_element_by_id('session_key-login').send_keys(login)
+    browser.find_element_by_id('session_password-login').send_keys(pwd)
     browser.find_element_by_id('btn-primary').click()
     browser.switch_to_default_content()
     sleep(SLEEP_TIME)

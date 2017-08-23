@@ -2,15 +2,16 @@ import os
 
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyClientCredentials
+from pathlib import Path
 
 
-ROOT_NODE = '5M52tdBnJaKSvOpJGz8mfZ'
+ROOT_NODE = '7L6u6TyhjuwubrcojPeNgf'
 
-ROOT_NAME = 'Black Sabbath'
+ROOT_NAME = 'Burzum'
 
 ROOT_DEPTH = 2
 
-DATA_FOLDER = 'spotify'
+DATA_FOLDER = 'spotify_burzum'
 
 
 def get_successors(api, node, depth=1, names=None):
@@ -49,10 +50,14 @@ def save_successors(node, successors, names=None):
 
 
 def main():
+
+    with open('{}/spotify-keys.txt'.format(str(Path.home())), 'r') as fin:
+        _id = fin.readline().strip()
+        pwd = fin.readline().strip()
+        print('got id and pwd')
+
     client_credentials_manager = SpotifyClientCredentials(
-        client_id='SEU CLIENT ID',
-        client_secret='SEU CLIENT SECRET',
-    )
+        client_id=_id, client_secret=pwd)
 
     api = Spotify(client_credentials_manager=client_credentials_manager)
 

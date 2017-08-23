@@ -3,12 +3,13 @@ import os
 from time import sleep
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
-
+from pathlib import Path
 
 # Baixe o driver de https://sites.google.com/a/chromium.org/chromedriver/downloads
 # e extraia o executável. Coloque na constante abaixo o caminho completo para ele.
 
-DRIVER_PATH = r'/caminho/para/o/executavel/do/driver'
+
+DRIVER_PATH = r'{}/bin/chromedriver'.format(str(Path.home()))
 
 WINDOW_WIDTH = 1024
 
@@ -16,7 +17,7 @@ WINDOW_HEIGHT = 768
 
 SLEEP_TIME = 2
 
-ROOT_NODE = '656983'
+ROOT_NODE = '13275'  # Bukowski
 
 PAGE_LIMIT = 10
 
@@ -77,8 +78,13 @@ def main():
     browser.find_element_by_css_selector('.gr-button.gr-button--dark').click()
     sleep(SLEEP_TIME)
 
-    browser.find_element_by_id('user_email').send_keys('SEU LOGIN')
-    browser.find_element_by_id('user_password').send_keys('SUA SENHA')
+    with open('{}/goodreads-keys.txt'.format(str(Path.home())), 'r') as fin:
+        login = fin.readline().strip()
+        pwd = fin.readline().strip()
+        print(login, '\n', pwd)
+
+    browser.find_element_by_id('user_email').send_keys(login)
+    browser.find_element_by_id('user_password').send_keys(pwd)
     browser.find_element_by_css_selector('.gr-button.gr-button--large').click()
     sleep(SLEEP_TIME)
 
