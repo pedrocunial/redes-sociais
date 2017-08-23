@@ -214,10 +214,6 @@ def _add_edge(g, e, edge_trace, label_trace):
         edge_trace['y'].extend([y0, y1, None])
 
 
-def build_matrix(g):
-    return networkx.to_numpy_matrix(g)
-
-
 def reset_node_colors(g):
     for n in g.nodes_iter():
         g.node[n]['color'] = node_color
@@ -374,6 +370,30 @@ def show_animation(frames):
     }
 
     plotly.offline.iplot(figure, config={'displayModeBar': False}, show_link=False)
+
+
+def build_matrix(g):
+    return networkx.to_numpy_matrix(g)
+
+
+def build_betweenness(g):
+    betweenness = networkx.betweenness_centrality(g, normalized=False)
+
+    for n in betweenness:
+        g.node[n]['theoretical_betweenness'] = betweenness[n]
+
+
+def build_shortest_paths(g, s, t):
+    for n in g.nodes_iter():
+        g.node[n]['shortest_neighbors'] = set()
+
+    for path in networkx.all_shortest_paths(g, s, t):
+        for i in range(len(path) - 1):
+            g.node[path[i]]['shortest_neighbors'].add(path[i + 1])
+
+    for n in g.nodes_iter():
+        g.node[n]['shortest_neighbors'] = list(g.node[n]['shortest_neighbors'])
+        g.node[n]['shortest_neighbors'].sort()
 
 
 plotly.offline.init_notebook_mode(connected=True)
