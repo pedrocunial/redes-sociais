@@ -2,6 +2,7 @@ import networkx
 import plotly
 
 from math import sqrt, cos, sin
+from random import random
 
 
 HEAD_ANGLE = 0.5
@@ -35,9 +36,16 @@ def _normalize_positions(g):
 
     for n in g.nodes_iter():
         pos = g.node[n]['pos']
-        pos0 = (pos[0] - xmin) / xmax
-        pos1 = (pos[1] - ymin) / ymax
-        g.node[n]['pos'] = (pos0, pos1)
+        x = (pos[0] - xmin) / xmax
+        y = (pos[1] - ymin) / ymax
+        g.node[n]['pos'] = (x, y)
+
+
+def _set_layout(g, layout):
+    for n, value in layout.items():
+        g.node[n]['pos'] = (value[0], value[1])
+
+    _normalize_positions(g)
 
 
 def _scale(dx, dy, width, height, size):
@@ -227,10 +235,7 @@ def reset_edge_colors(g):
 def reset_positions(g):
     layout = networkx.spring_layout(g)
 
-    for n, value in layout.items():
-        g.node[n]['pos'] = (value[0], value[1])
-
-    _normalize_positions(g)
+    _set_layout(g, layout)
 
 
 def load_graph(path, has_pos=False):
@@ -394,6 +399,32 @@ def build_shortest_paths(g, s, t):
     for n in g.nodes_iter():
         g.node[n]['shortest_neighbors'] = list(g.node[n]['shortest_neighbors'])
         g.node[n]['shortest_neighbors'].sort()
+
+
+def randomize_positions(g):
+    for n in g.nodes_iter():
+        x = random()
+        y = random()
+        g.node[n]['pos'] = (x, y)
+
+
+def generate_complete_graph(number_of_nodes):
+    g = networkx.complete_graph(number_of_nodes)
+
+    reset_node_colors(g)
+    reset_edge_colors(g)
+
+    randomize_positions(g)
+
+    return g
+
+
+def update_positions(g, weight):
+    pos = {n: g.node[n]['pos'] for n in g.nodes()}
+
+    layout = networkx.spring_layout(g, pos=pos, iterations=1, weight=weight)
+
+    _set_layout(g, layout)
 
 
 plotly.offline.init_notebook_mode(connected=True)
