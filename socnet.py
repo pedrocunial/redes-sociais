@@ -419,7 +419,7 @@ def generate_complete_graph(number_of_nodes):
     return g
 
 
-def update_positions(g, weight):
+def update_positions(g, weight=None):
     pos = {n: g.node[n]['pos'] for n in g.nodes()}
 
     layout = networkx.spring_layout(g, pos=pos, iterations=1, weight=weight)
