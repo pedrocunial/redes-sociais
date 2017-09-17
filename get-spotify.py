@@ -5,13 +5,13 @@ from spotipy.oauth2 import SpotifyClientCredentials
 from pathlib import Path
 
 
-ROOT_NODE = '7L6u6TyhjuwubrcojPeNgf'
+ROOT_NODE = '07XSN3sPlIlB2L2XNcTwJw'
 
-ROOT_NAME = 'Burzum'
+ROOT_NAME = 'KISS'
 
 ROOT_DEPTH = 2
 
-DATA_FOLDER = 'spotify_burzum'
+DATA_FOLDER = 'spotify_kiss'
 
 
 def get_successors(api, node, depth=1, names=None):

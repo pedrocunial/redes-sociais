@@ -3,19 +3,19 @@ import os
 from unidecode import unidecode
 
 
-DATA_FOLDER = 'twitter'
+DATA_FOLDER = 'spotify_kiss'
 
-ROOT_NODE = 'supernerd1337'
+ROOT_NODE = '07XSN3sPlIlB2L2XNcTwJw'
 
-ROOT_NAME = 'supernerd1337'
+ROOT_NAME = 'KISS'
 
-ROOT_DEPTH = 1
+ROOT_DEPTH = 2
 
 INCLUDE_ROOT = True
 
-DIRECTED = False
+DIRECTED = True
 
-GRAPH_NAME = 'twitter-supernerd1337-depth-1'
+GRAPH_NAME = 'kiss-directed'
 
 
 def load_successors(node, depth=1, names=None):
