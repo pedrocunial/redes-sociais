@@ -24,8 +24,8 @@ edge_label_distance = 10
 def _normalize_positions(g):
     xs = []
     ys = []
-    for n in g.nodes_iter():
-        pos = g.node[n]['pos']
+    for n in g.nodes:
+        pos = g.nodes[n]['pos']
         xs.append(pos[0])
         ys.append(pos[1])
 
@@ -34,16 +34,16 @@ def _normalize_positions(g):
     xmax = max(xs) - xmin
     ymax = max(ys) - ymin
 
-    for n in g.nodes_iter():
-        pos = g.node[n]['pos']
+    for n in g.nodes:
+        pos = g.nodes[n]['pos']
         x = (pos[0] - xmin) / xmax
         y = (pos[1] - ymin) / ymax
-        g.node[n]['pos'] = (x, y)
+        g.nodes[n]['pos'] = (x, y)
 
 
 def _set_layout(g, layout):
     for n, value in layout.items():
-        g.node[n]['pos'] = (value[0], value[1])
+        g.nodes[n]['pos'] = (value[0], value[1])
 
     _normalize_positions(g)
 
@@ -163,15 +163,15 @@ def _build_layout(width, height):
 
 
 def _add_node(g, n, node_trace):
-    x, y = g.node[n]['pos']
+    x, y = g.nodes[n]['pos']
 
     node_trace['x'].append(x)
     node_trace['y'].append(y)
 
 
 def _add_edge(g, e, edge_trace, label_trace):
-    x0, y0 = g.node[e[0]]['pos']
-    x1, y1 = g.node[e[1]]['pos']
+    x0, y0 = g.nodes[e[0]]['pos']
+    x1, y1 = g.nodes[e[1]]['pos']
 
     dx = y0 - y1
     dy = x1 - x0
@@ -194,7 +194,7 @@ def _add_edge(g, e, edge_trace, label_trace):
         scale = _scale(dx, dy, width, height, edge_label_distance)
         label_trace['x'].append((x0 + x1) / 2 + dx * scale)
         label_trace['y'].append((y0 + y1) / 2 + dy * scale)
-        label_trace['text'].append(g.edge[e[0]][e[1]]['label'])
+        label_trace['text'].append(g.edges[e[0], e[1]]['label'])
 
     if isinstance(g, networkx.DiGraph):
         dx = x0 - x1
@@ -223,13 +223,13 @@ def _add_edge(g, e, edge_trace, label_trace):
 
 
 def reset_node_colors(g):
-    for n in g.nodes_iter():
-        g.node[n]['color'] = node_color
+    for n in g.nodes:
+        g.nodes[n]['color'] = node_color
 
 
 def reset_edge_colors(g):
-    for e in g.edges_iter():
-        g.edge[e[0]][e[1]]['color'] = edge_color
+    for e in g.edges:
+        g.edges[e[0], e[1]]['color'] = edge_color
 
 
 def reset_positions(g):
@@ -245,10 +245,10 @@ def load_graph(path, has_pos=False):
     reset_edge_colors(g)
 
     if has_pos:
-        for n in g.nodes_iter():
-            g.node[n]['pos'] = (g.node[n]['x'], g.node[n]['y'])
-            del g.node[n]['x']
-            del g.node[n]['y']
+        for n in g.nodes:
+            g.nodes[n]['pos'] = (g.nodes[n]['x'], g.nodes[n]['y'])
+            del g.nodes[n]['x']
+            del g.nodes[n]['y']
 
         _normalize_positions(g)
     else:
@@ -260,13 +260,13 @@ def load_graph(path, has_pos=False):
 def show_graph(g, nlab=False, elab=False):
     node_traces = {}
 
-    for n in g.nodes_iter():
-        color = g.node[n]['color']
+    for n in g.nodes:
+        color = g.nodes[n]['color']
         if color not in node_traces:
             node_traces[color] = _build_node_trace(color)
         _add_node(g, n, node_traces[color])
         if nlab:
-            node_traces[color]['text'].append(g.node[n]['label'])
+            node_traces[color]['text'].append(g.nodes[n]['label'])
 
     edge_traces = {}
 
@@ -275,8 +275,8 @@ def show_graph(g, nlab=False, elab=False):
     else:
         label_trace = None
 
-    for e in g.edges_iter():
-        color = g.edge[e[0]][e[1]]['color']
+    for e in g.edges:
+        color = g.edges[e[0], e[1]]['color']
         if color not in edge_traces:
             edge_traces[color] = _build_edge_trace(color)
         _add_edge(g, e, edge_traces[color], label_trace)
@@ -296,12 +296,12 @@ def show_graph(g, nlab=False, elab=False):
 def generate_frame(g, nlab=False, elab=False):
     node_traces = []
 
-    for n in g.nodes_iter():
-        trace = _build_node_trace(g.node[n]['color'])
+    for n in g.nodes:
+        trace = _build_node_trace(g.nodes[n]['color'])
         node_traces.append(trace)
         _add_node(g, n, trace)
         if nlab:
-            trace['text'].append(g.node[n]['label'])
+            trace['text'].append(g.nodes[n]['label'])
 
     edge_traces = []
 
@@ -310,8 +310,8 @@ def generate_frame(g, nlab=False, elab=False):
     else:
         label_trace = None
 
-    for e in g.edges_iter():
-        trace = _build_edge_trace(g.edge[e[0]][e[1]]['color'])
+    for e in g.edges:
+        trace = _build_edge_trace(g.edges[e[0], e[1]]['color'])
         edge_traces.append(trace)
         _add_edge(g, e, trace, label_trace)
 
@@ -385,27 +385,27 @@ def build_betweenness(g):
     betweenness = networkx.betweenness_centrality(g, normalized=False)
 
     for n in betweenness:
-        g.node[n]['theoretical_betweenness'] = betweenness[n]
+        g.nodes[n]['theoretical_betweenness'] = betweenness[n]
 
 
 def build_shortest_paths(g, s, t):
-    for n in g.nodes_iter():
-        g.node[n]['shortest_neighbors'] = set()
+    for n in g.nodes:
+        g.nodes[n]['shortest_neighbors'] = set()
 
     for path in networkx.all_shortest_paths(g, s, t):
         for i in range(len(path) - 1):
-            g.node[path[i]]['shortest_neighbors'].add(path[i + 1])
+            g.nodes[path[i]]['shortest_neighbors'].add(path[i + 1])
 
-    for n in g.nodes_iter():
-        g.node[n]['shortest_neighbors'] = list(g.node[n]['shortest_neighbors'])
-        g.node[n]['shortest_neighbors'].sort()
+    for n in g.nodes:
+        g.nodes[n]['shortest_neighbors'] = list(g.nodes[n]['shortest_neighbors'])
+        g.nodes[n]['shortest_neighbors'].sort()
 
 
 def randomize_positions(g):
-    for n in g.nodes_iter():
+    for n in g.nodes:
         x = random()
         y = random()
-        g.node[n]['pos'] = (x, y)
+        g.nodes[n]['pos'] = (x, y)
 
 
 def generate_complete_graph(number_of_nodes):
@@ -420,7 +420,7 @@ def generate_complete_graph(number_of_nodes):
 
 
 def update_positions(g, weight=None):
-    pos = {n: g.node[n]['pos'] for n in g.nodes()}
+    pos = {n: g.nodes[n]['pos'] for n in g.nodes}
 
     layout = networkx.spring_layout(g, pos=pos, iterations=1, weight=weight)
 
