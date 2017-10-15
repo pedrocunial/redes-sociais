@@ -14,7 +14,7 @@ graph_height = 450
 node_size = 20
 node_color = (255, 255, 255)
 
-edge_width = 2
+edge_width = 
 edge_color = (0, 0, 0)
 
 node_label_position = 'middle center'
