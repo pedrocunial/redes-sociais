@@ -3,6 +3,8 @@ import plotly
 
 from math import sqrt, cos, sin
 from random import random
+from itertools import combinations
+from functools import reduce
 
 
 HEAD_ANGLE = 0.5
@@ -444,41 +446,42 @@ def update_positions(g, weight=None):
     _set_layout(g, layout)
 
 
+def largest_component(g):
+    return max(networkx.algorithms.components.connected_component_subgraphs(g), key=len)
+
+
 def average_distance(g):
     return networkx.algorithms.shortest_paths.generic.average_shortest_path_length(g)
 
 
-def clustering_coefficient(g):
+def average_clustering_coefficient(g):
+    return networkx.algorithms.cluster.average_clustering(g)
+
+
+def global_clustering_coefficient(g):
     num_nodes = g.number_of_nodes()
 
     nodes = list(g.nodes)
 
-    num_connected_triplets = 0
+    has_cache = [
+        [
+            int(g.has_edge(nodes[i], nodes[j])) if i < j else None
+            for j in range(num_nodes)
+        ]
+        for i in range(num_nodes)
+    ]
 
-    num_closed_triplets = 0
+    num_cache = [(0, 0), (0, 0), (0, 1), (3, 3)]
 
-    for i in range(num_nodes):
-        n = nodes[i]
+    def _mapping(x):
+        return num_cache[has_cache[x[0]][x[1]] + has_cache[x[0]][x[2]] + has_cache[x[1]][x[2]]]
 
-        for j in range(i + 1, num_nodes):
-            m = nodes[j]
+    def _reduction(x, y):
+        return (x[0] + y[0], x[1] + y[1])
 
-            for k in range(j + 1, num_nodes):
-                l = nodes[k]
+    num_closed, num_connected = reduce(_reduction, map(_mapping, combinations(range(num_nodes), 3)))
 
-                num_edges = int(g.has_edge(n, m))
-                num_edges += int(g.has_edge(n, l))
-                num_edges += int(g.has_edge(m, l))
-
-                if(num_edges > 1):
-                    num_connected_triplets += 1
-
-                    if(num_edges > 2):
-                        num_connected_triplets += 2
-
-                        num_closed_triplets += 3
-
-    return num_closed_triplets / num_connected_triplets
+    return num_closed / num_connected
 
 
 plotly.offline.init_notebook_mode(connected=True)
