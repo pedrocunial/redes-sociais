@@ -1,0 +1,5 @@
+* Peer Review Escrita 6
+  Texto: Marcelo Andrade
+  Avaliador: Pedro Cunial
+** Existe um entendimento convincente do contexto social em que se quer analisar?
+   Apesar de demonstrar grande conhecimento sobre análise de dados e sua manipulação, o autor não demonstra grande profundidade na análise do contexto social no qual o texto se constrói, tal que

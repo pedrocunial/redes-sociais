@@ -1,0 +1,6 @@
+\contentsline {section}{\numberline {1}Existe um entendimento convincente do contexto social em que se quer analisar?}{1}{section.1}
+\contentsline {section}{\numberline {2}Os conceitos e m\IeC {\'e}tricas de An\IeC {\'a}lise de Redes Sociais foram devidamente justificados?}{1}{section.2}
+\contentsline {section}{\numberline {3}Os m\IeC {\'e}todos foram explicados de forma clara?}{1}{section.3}
+\contentsline {section}{\numberline {4}O texto \IeC {\'e} acompanhado de anexos com an\IeC {\'a}lises clara e que suportam de forma inequ\IeC {\'\i }voca as afirma\IeC {\c c}\IeC {\~o}es do texto?}{2}{section.4}
+\contentsline {section}{\numberline {5}A interpreta\IeC {\c c}\IeC {\~a}o dos resultados foi realizada de forma adequada?}{2}{section.5}
+\contentsline {section}{\numberline {6}A narrativa do texto oferece ``come\IeC {\c c}o, meio e fim''? \IeC {\'E} poss\IeC {\'\i }vel observar o encadeamento l\IeC {\'o}gico das ideias?}{2}{section.6}
